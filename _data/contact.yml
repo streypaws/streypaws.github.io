@@ -15,10 +15,7 @@
 - type: mastodon
   icon: 'fab fa-mastodon'   
   url:  "https://infosec.exchange/@streypaws"  
-
-- type: stack-overflow
-  icon: 'fab fa-stack-overflow'
-  url:  "https://stackoverflow.com/users/13018785/streypaws"                            
+                          
 
                 
 #
