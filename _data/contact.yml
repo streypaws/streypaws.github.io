@@ -12,15 +12,15 @@
   icon: 'fab fa-linkedin'   
   url:  "https://www.linkedin.com/in/shreyas-penkar-2934891a7"      
 
+- type: mastodon
+  icon: 'fab fa-mastodon'   
+  url:  "https://infosec.exchange/@streypaws"  
+
 - type: stack-overflow
   icon: 'fab fa-stack-overflow'
   url:  "https://stackoverflow.com/users/13018785/streypaws"                            
 
-# Uncomment and complete the url below to enable more contact options
-#
-# - type: mastodon
-#   icon: 'fab fa-mastodon'   # icons powered by <https://fontawesome.com/>
-#   url:  ''                  # Fill with your Mastodon account page, rel="me" will be applied for verification
+                
 #
 # - type: linkedin
 #   icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
