@@ -2,17 +2,20 @@
 
 - type: github
   icon: "fab fa-github"
+  url: "https://github.com/Shreyas-Penkar"
 
 - type: twitter
   icon: "fa-brands fa-x-twitter"
+  url: "https://x.com/streypaws"
 
-- type: email
-  icon: "fas fa-envelope"
-  noblank: true # open link in current tab
+- type: linkedin
+  icon: 'fab fa-linkedin'   
+  url:  "https://www.linkedin.com/in/shreyas-penkar-2934891a7"      
 
-- type: rss
-  icon: "fas fa-rss"
-  noblank: true
+- type: stack-overflow
+  icon: 'fab fa-stack-overflow'
+  url:  "https://stackoverflow.com/users/13018785/streypaws"                            
+
 # Uncomment and complete the url below to enable more contact options
 #
 # - type: mastodon
