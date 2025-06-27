@@ -19,7 +19,7 @@ The tool uses a single threaded download script to get json data for all the Chr
 
 ## Usage
 
-First create a python `virutal-env`
+First `git clone` the repository and inside it, create a python `virutal environment`
 
 ```bash
 python3 -m venv venv
@@ -34,7 +34,7 @@ pip3 install -r requirements.txt
 ```
 {: .nolineno }
 
-After which you may run the script 
+After which you may run the script using -
 
 ```bash
 python3 main.py
@@ -58,8 +58,6 @@ Let's say you chose option 2 (which is the mvp of the tool), you'll be asked for
 ![Desktop View](/assets/Browser/Tools/V8_Cross_Referencer/output.png){: width="600" height="400" }
 
 If you wish to try out this tool, you can find it on my [Github](https://github.com/Shreyas-Penkar/V8_Cross_Referencer).
-
-Well, that's it! Have Fun!
 
 ## Credits
 
