@@ -19,7 +19,7 @@ The tool uses a single threaded download script to get json data for all the Chr
 
 ## Usage
 
-First `git clone` the repository and inside it, create a python `virutal environment`
+First `git clone` the repository and inside it, create a python `virtual environment`
 
 ```bash
 python3 -m venv venv
