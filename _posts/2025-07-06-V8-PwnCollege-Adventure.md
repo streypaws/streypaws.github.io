@@ -9,7 +9,9 @@ future: true
 ---
 ![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fstreypaws.github.io%2F{{ page.url }}&label=Views&icon=eye-fill&color=%23198754&message=&style=flat&tz=UTC)
 
-# UNDER CONSTRUCTION
+## UNDER CONSTRUCTION
+I'm still working on this post in my free time, you may still check out the parts I've completed. Thanks!
+
 
 This is my journey through solving all [V8](https://v8.dev) exploitation challenges available in the [Quarterly Quiz](https://pwn.college/quarterly-quiz/v8-exploitation/) section of [PwnCollege](https://pwn.college/). I’ll be documenting all the **exploitation techniques** used in each challenge in detail, accompanied by **live debugging** and detailed **patch analysis** to break down how each component functions step by step. 
 
