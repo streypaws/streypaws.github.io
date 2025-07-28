@@ -6,7 +6,6 @@ tags: [v8,tools]     # TAG names should always be lowercase
 description: Tool to cross reference between V8 and Chrome Versions using Chromium Dash API.
 comments: false
 ---
-![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fstreypaws.github.io%2F{{ page.url }}&label=Views&icon=eye-fill&color=%23198754&message=&style=flat&tz=UTC)
 
 ## Motivation
 

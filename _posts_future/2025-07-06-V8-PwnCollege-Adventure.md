@@ -7,7 +7,6 @@ description: My adventure through tackling V8 exploitation challenges and learni
 comments: false
 future: true
 ---
-![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fstreypaws.github.io%2F{{ page.url }}&label=Views&icon=eye-fill&color=%23198754&message=&style=flat&tz=UTC)
 
 ## UNDER CONSTRUCTION
 I'm still working on this post in my free time, you may still check out the parts I've completed. Thanks!
