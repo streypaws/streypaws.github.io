@@ -1,0 +1,28 @@
+data removed - 
+
+cd drivers/camera-kernel/drivers/ && \
+rm -rf cam_cre/ cam_lrme/ cam_ope/ cam_presil/ cam_cust/ cam_res_mgr/ cam_sensor_lite/ \
+       cam_req_mgr/cam_req_mgr_debug.* \
+       cam_utils/cam_trace.* \
+       $(find . -name '*_reg_*' ! -name '*_reg_1_0*' | grep -E 'cam_cdm_hw_reg|cpastop_v') \
+       $(find . -type d -name '*lite*') \
+       $(find . -type d -name '*virt*')
+Breakdown:
+Removes entire directories:
+
+cam_cre/, cam_lrme/, cam_ope/, cam_presil/, cam_cust/, cam_res_mgr/, cam_sensor_lite/
+
+Removes specific debug files:
+
+cam_req_mgr_debug.* and cam_trace.*
+
+Cleans up versioned files (keeping v1.0 as example):
+
+Deletes all *_reg_* files except those containing _reg_1_0
+
+Targets both CDM (cam_cdm_hw_reg) and CPAS (cpastop_v) registers
+
+Removes "lite" and "virtual" HW variants:
+
+All directories containing lite or virt in name
+

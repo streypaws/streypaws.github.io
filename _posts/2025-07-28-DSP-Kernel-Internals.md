@@ -2,7 +2,7 @@
 title: Qualcomm DSP Kernel Internals
 date: 2025-07-28 15:06:45 +/-0530
 categories: [Android,DSP-Kernel]
-tags: [android,dsp-kernel,adsprpc]     # TAG names should always be lowercase
+tags: [android,dsp-kernel,adsprpc,driver]     # TAG names should always be lowercase
 description: In depth internals on Qualcomm DSP Kernel (FastRPC implementation)
 comments: false
 future: true
