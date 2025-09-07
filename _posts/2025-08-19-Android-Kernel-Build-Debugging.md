@@ -18,7 +18,7 @@ In this post, we will progressively build up the knowledge and tools required to
 
 We will start by obtaining and compiling the [Android Common Kernel (ACK)](https://source.android.com/docs/core/architecture/kernel/android-common), which forms the base for most Android devices. Next, we will create a minimal root filesystem using [Buildroot](https://buildroot.org/), enabling us to run the kernel in an emulated environment. With this setup, we will emulate the Android kernel on [QEMU](https://www.qemu.org/), allowing safe experimentation without the need for physical hardware.
 
-Once the environment is ready, we will dive into [kernel driver programming](https://sysprog21.github.io/lkmpg/), learning how drivers interact with the kernel and exploring typical vulnerabilities that can arise in such code. Finally, we will focus on kernel debugging, leveraging QEMU, [GDB](http://www.gnu.org/software/gdb/gdb.html), and kernel logs to trace execution.
+Once the environment is ready, we will dive into [kernel driver programming](https://sysprog21.github.io/lkmpg/), learning how drivers interact with the kernel and exploring typical vulnerabilities that can arise in such code. Finally, we will focus on kernel debugging, leveraging QEMU, [GDB](https://www.gnu.org/software/gdb/gdb.html), and kernel logs to trace execution.
 
 
 ## Obtain and Compile Android Common Kernel (ACK)
@@ -215,7 +215,7 @@ This is a standard script to run QEMU with some additional tweaks. The `-append`
 The `console=ttyAMA0` tells the kernel to use the `ttyAMA0` UART device as its primary console. On ARM systems, it is the first `PL011 UART` (commonly emulated in QEMU’s virt machine). This ensures that all kernel messages and login prompts appear in QEMU’s terminal window, so we can interact with the guest OS. The `root=/dev/vda` means the kernel will look for the root filesystem on the first `virtio-blk` device (usually provided by QEMU if we pass `-drive if=virtio`,...).
 
 There are two parameters which are `-s` and `-S`. The `-s` is a shorthand for
-`-gdb tcp::1234`. It tells QEMU to start a GDB server on TCP port 1234. Useful for kernel or low-level debugging, since we can set breakpoints, inspect registers, or step through instructions. The `-S` makes QEMU freeze the CPU at startup, before executing the first instruction. We'll be using these features in the [Debugging Section](http://streypaws.github.io/posts/Android-Kernel-Build-Debugging/#android-kernel-debugging).
+`-gdb tcp::1234`. It tells QEMU to start a GDB server on TCP port 1234. Useful for kernel or low-level debugging, since we can set breakpoints, inspect registers, or step through instructions. The `-S` makes QEMU freeze the CPU at startup, before executing the first instruction. We'll be using these features in the [Debugging Section](https://streypaws.github.io/posts/Android-Kernel-Build-Debugging/#android-kernel-debugging).
 
 The lines `-netdev user,id=net0,hostfwd=tcp::13337-:22` Creates a user-mode network backend named `net0`, and forwards host TCP port 13337 → guest port 22, so we can SSH into the guest. This is useful for Buildroot or Linux guests where we want network access without setting up TAP bridges. The line `-device virtio-net-device,netdev=net0` attaches a virtual network card (`virtio-net-device`) to the guest, connects it to the previously defined backend `net0` giving the guest network access and enables the host port-forwarding rule. Together, they set up networking inside QEMU with SSH access from the host.
 
