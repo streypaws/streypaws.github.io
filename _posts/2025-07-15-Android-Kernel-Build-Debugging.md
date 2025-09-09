@@ -1,6 +1,6 @@
 ---
 title: Android Kernel Build and Debugging using QEMU
-date: 2025-08-19 15:06:45 +/-0530
+date: 2025-07-15 15:06:45 +/-0530
 categories: [Android,Debugging]
 tags: [android,kernel,debugging,driver,emulation]     # TAG names should always be lowercase
 description: Steps on how to setup working Android Kernel Setup with debugging using QEMU.
@@ -427,5 +427,5 @@ This not only allows us to explore kernel internals and driver development but a
 ## Credits
 
 > Hey There! If you’ve come across any bugs or have ideas for improvements, feel free to reach out to me on X!
-If your suggestion proves helpful and gets implemented, I’ll gladly credit we in this dedicated Credits section. Thanks for reading!
+If your suggestion proves helpful and gets implemented, I’ll gladly credit you in this dedicated Credits section. Thanks for reading!
 {: .prompt-info }
