@@ -21,7 +21,7 @@ All content provided is for educational and research purposes only. All testing 
 
 `CVE-2025-38352` is a classic `TOCTOU` (Time-of-Check to Time-of-Use) vulnerability in the Linux/Android kernel’s Timer Subsystem. Specifically, it arises from a Race Condition in `kernel/time/posix-cpu-timers.c`. This flaw could lead to kernel instability, crashes, or unpredictable behavior, and in certain scenarios, may even be escalated into a privilege escalation on the target system.
 
-We’ll begin with an in-depth exploration of the [POSIX CPU Timer Subsystem](https://streypaws.github.io/posts/Posix-Timer-CVE/#posix-cpu-timer-internals) and its internals, followed by a detailed [patch](https://streypaws.github.io/posts/Posix-Timer-CVE/#patch-analysis) and [vulnerability analysis](https://streypaws.github.io/posts/Posix-Timer-CVE/#vulnerable-code-analysis). Finally, we’ll walk through how this bug could be safely and [reproducibly triggered](https://streypaws.github.io/posts/Posix-Timer-CVE/#triggering-the-bug) in an isolated, emulated environment for demonstration purposes.
+We’ll begin with an in-depth exploration of the [POSIX CPU Timer Subsystem](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#posix-cpu-timer-internals) and its internals, followed by a detailed [patch](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#patch-analysis) and [vulnerability analysis](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#vulnerable-code-analysis). Finally, we’ll walk through how this bug could be safely and [reproducibly triggered](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#triggering-the-bug) in an isolated, emulated environment for demonstration purposes.
 
 ## POSIX CPU Timer Internals
 
@@ -219,7 +219,7 @@ We can access the patch via this [link](https://android.googlesource.com/kernel/
 
 As per the patch report, the vulnerability arises when an exiting task invokes [handle_posix_cpu_timers](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L1328-L1428) from an interrupt context while, at the same time, another thread attempts to delete a timer using [posix_cpu_timer_del](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L465-L511). This overlap creates a narrow but critical race condition. Let's see where exactly.
 
-There are two scenarios to this bug (as highlighted in the patch). There are 2 separate code paths (as we saw [earlier](https://streypaws.github.io/posts/Posix-Timer-CVE/#timer-expiration-and-signal-delivery)) taken by `run_posix_cpu_timers` dependent on the `CONFIG_POSIX_CPU_TIMERS_TASK_WORK` config flag. It can be clearly seen in the [code](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L1164-L1326) -
+There are two scenarios to this bug (as highlighted in the patch). There are 2 separate code paths (as we saw [earlier](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#timer-expiration-and-signal-delivery)) taken by `run_posix_cpu_timers` dependent on the `CONFIG_POSIX_CPU_TIMERS_TASK_WORK` config flag. It can be clearly seen in the [code](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L1164-L1326) -
 
 ```c
 void run_posix_cpu_timers(void)
@@ -532,7 +532,7 @@ wget https://android.googlesource.com/kernel/common/+archive/1bf1aa362e6b9573a31
 tar xf 1bf1aa362e6b9573a310fcd14f35bc875b42ba83.tar.gz
 ```
 
-The next steps largely follow the [compilation steps](https://streypaws.github.io/posts/Android-Kernel-Build-Debugging/#obtain-and-compile-android-common-kernel-ack) from my earlier blog, but with an important caveat. As noted in the [patch](https://streypaws.github.io/posts/Posix-Timer-CVE/#patch-analysis), the behavior of the vulnerable code path depends on the `CONFIG_POSIX_CPU_TIMERS_TASK_WORK` flag in the generated kernel config (`.config`). To properly analyze this, we need two builds: one with the flag enabled and one with it disabled.
+The next steps largely follow the [compilation steps](https://streypaws.github.io/posts/Android-Kernel-Build-Debugging/#obtain-and-compile-android-common-kernel-ack) from my earlier blog, but with an important caveat. As noted in the [patch](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#patch-analysis), the behavior of the vulnerable code path depends on the `CONFIG_POSIX_CPU_TIMERS_TASK_WORK` flag in the generated kernel config (`.config`). To properly analyze this, we need two builds: one with the flag enabled and one with it disabled.
 
 Compiling with the flag enabled was straightforward, but I ran into issues when trying to set it to `n`. Even when forced, the kernel build system automatically flips it back to `y`. To work around this, I manually patched the [relevant functions](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L1296-L1326) (shown below) to the [ones above](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L1164-L1295) before compiling the kernel.
 
@@ -576,11 +576,11 @@ Since I cannot share the exact steps used to reproduce the bug (as noted in the 
 
 We need to target the timing window where `handle_posix_cpu_timers` releases the signal handler lock. At that precise moment, the exiting task may be fully cleaned up, freeing its `task_struct` and associated resources. If `posix_cpu_timer_del` executes during this window, it may miss the timer firing check leading to failure of `cpu_timer_task_rcu` or `lock_task_sighand` calls. At that point the kernel becomes unstable and may result in a crash or undefined behavior.
 
-Based on the knowledge we gathered so far, I developed a minimal trigger PoC for demonstration purposes to be tested out in our emulated environment. I decided to first test the PoC on the `CONFIG_POSIX_CPU_TIMERS_TASK_WORK=n` setting on which the [patch](https://streypaws.github.io/posts/Posix-Timer-CVE/#patch-analysis) emphasises on, and upon doing so, after a few tries, we get a beautiful crash -
+Based on the knowledge we gathered so far, I developed a minimal trigger PoC for demonstration purposes to be tested out in our emulated environment. I decided to first test the PoC on the `CONFIG_POSIX_CPU_TIMERS_TASK_WORK=n` setting on which the [patch](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#patch-analysis) emphasises on, and upon doing so, after a few tries, we get a beautiful crash -
 
 ![Desktop View](assets/Android/CVEs/Posix_Timer_CVE/poc1.png){: width="1000" height="1000" }
 
-After the poc worked on the above scenario, I was intrigued to try it out in the default settings `CONFIG_POSIX_CPU_TIMERS_TASK_WORK=y` as mentioned in the last part of the [patch](https://streypaws.github.io/posts/Posix-Timer-CVE/#patch-analysis), and upon doing so, after a few tries, we again get a kernel crash -
+After the poc worked on the above scenario, I was intrigued to try it out in the default settings `CONFIG_POSIX_CPU_TIMERS_TASK_WORK=y` as mentioned in the last part of the [patch](https://streypaws.github.io/posts/Race-Against-Time-in-the-Kernel-Clockwork/#patch-analysis), and upon doing so, after a few tries, we again get a kernel crash -
 
 ![Desktop View](assets/Android/CVEs/Posix_Timer_CVE/poc2.png){: width="1000" height="1000" }
 ![Desktop View](assets/Android/CVEs/Posix_Timer_CVE/poc3.png){: width="1000" height="1000" }
