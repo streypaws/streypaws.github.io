@@ -325,6 +325,16 @@ void run_posix_cpu_timers(void)
 }
 ...
 ...
+#ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
+static void posix_cpu_timers_work(struct callback_head *work)
+{
+	struct posix_cputimers_work *cw = container_of(work, typeof(*cw), work);
+
+	mutex_lock(&cw->mutex);
+	handle_posix_cpu_timers(current); // [4]
+	mutex_unlock(&cw->mutex);
+}
+...
 ...
 #else /* CONFIG_POSIX_CPU_TIMERS_TASK_WORK */
 static inline void __run_posix_cpu_timers(struct task_struct *tsk)
@@ -337,7 +347,7 @@ static inline void __run_posix_cpu_timers(struct task_struct *tsk)
 
 ```
 
-The sequence begins when a Thread A fires a timer interrupt. In response, the kernel invokes `update_process_times` [1], which eventually calls `run_posix_cpu_timers` [2]. If expired timers are detected, `run_posix_cpu_timers` proceeds to call `handle_posix_cpu_timers` eventually [4] to process them. This assumes that the flag `CONFIG_POSIX_CPU_TIMERS_TASK_WORK` is turned off.
+The sequence begins when a Thread A fires a timer interrupt. In response, the kernel invokes `update_process_times` [1], which eventually calls `run_posix_cpu_timers` [2]. If expired timers are detected, `run_posix_cpu_timers` proceeds to call `handle_posix_cpu_timers` eventually [4] to process them. This assumes that the flag `CONFIG_POSIX_CPU_TIMERS_TASK_WORK` is turned off. If the flag is turned on, then the code path first goes through [posix_cpu_timers_work](https://github.com/Shreyas-Penkar/Android-Common-Kernel-Source-commit---1bf1aa362e6b9573a310fcd14f35bc875b42ba83/blob/main/kernel/time/posix-cpu-timers.c#L1164-L1172), and then continues with `handle_posix_cpu_timers`.
 
 ```c
 static void handle_posix_cpu_timers(struct task_struct *tsk)
