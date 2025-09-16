@@ -6,6 +6,7 @@ tags: [android,kernel,posix-timer,cve]     # TAG names should always be lowercas
 description: An in-depth exploration of the Linux POSIX CPU Timer Subsystem, including patch analysis and vulnerability insights for Android Kernel CVE-2025-38352.
 comments: false
 future: true
+mermaid: true
 ---
 
 In this blog, I'll be presenting my research on `CVE-2025-38352` (a `posix-cpu-timers` TOCTOU Race Condition Bug) covering the patch-fix analysis, vulnerability analysis, and technical insights into my process of triggering the bug that caused a crash in the Android kernel. It was released in the [September 2025 Android Bulletin](https://source.android.com/docs/security/bulletin/2025-09-01), marked as possibly under limited, targeted exploitation.

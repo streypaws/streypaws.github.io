@@ -20,7 +20,7 @@ The next question is: **How can we actually access and use this driver from user
 Let's check what different SELinux contexts can access the `/dev/adsprpc-smd` driver.
 
 ```shell
-e3q:/ # ls -lZ /dev adsprpc-smd             
+e3q:/ # ls -lZ /dev/adsprpc-smd             
 crw-rw-r-- 1 system system u:object_r:vendor_qdsp_device:s0  464,   0 2023-03-05 15:39 /dev/adsprpc-smd
 ```
 

@@ -70,7 +70,13 @@ CONFIG_CMDLINE="console=ttyAMA0"
 CONFIG_GDB_SCRIPTS=y
 ```
 
-Now we are ready to build the Android Kernel. Run the final command - 
+If some entries are missing, add them in the `.config` file. After this, run the command - 
+
+```shell
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make olddefconfig
+```
+
+This will revaluates all configs against the `Kconfig` dependencies. Now we are ready to build the Android Kernel. Run the final command - 
 
 ```shell
 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j$(nproc)
