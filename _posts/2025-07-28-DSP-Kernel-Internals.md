@@ -855,6 +855,6 @@ Thanks for reading!
 
 ## Credits
 
-> Hey There! If you’ve come across any bugs or have ideas for improvements, feel free to reach out to me on X!
+> Hey There! If you’ve come across any bugs or have ideas for improvements, feel free to [reach out to me on X](https://x.com/streypaws)!
 If your suggestion proves helpful and gets implemented, I’ll gladly credit you in this dedicated Credits section. Thanks for reading!
 {: .prompt-info }
