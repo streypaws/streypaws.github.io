@@ -354,7 +354,7 @@ int kgsl_add_fault(struct kgsl_context *context, u32 type, void *priv)
 }
 ```
 
-As we saw earlier in the [internals section](http://streypaws.github.io/posts/Fast-and-Faulty-A-Use-After-Free-in-KGSL-Fault-Handling/#kgsl-fault-mechanism), the core of the fault storage system is the `kgsl_add_fault` function, which manages a per-context list of fault records. Each context maintains a faults list protected by a `fault_lock` mutex. The fault system stores GPU fault information  of `kgsl_fault_node` structures containing the fault type, private data pointer, and timestamp. Each context has a dedicated `fault_lock` mutex for protecting this list.
+As we saw earlier in the [internals section](https://streypaws.github.io/posts/Fast-and-Faulty-A-Use-After-Free-in-KGSL-Fault-Handling/#kgsl-fault-mechanism), the core of the fault storage system is the `kgsl_add_fault` function, which manages a per-context list of fault records. Each context maintains a faults list protected by a `fault_lock` mutex. The fault system stores GPU fault information  of `kgsl_fault_node` structures containing the fault type, private data pointer, and timestamp. Each context has a dedicated `fault_lock` mutex for protecting this list.
 
 The fault storage system implements automatic cleanup to prevent memory exhaustion. It removes faults older than `KGSL_MAX_FAULT_TIME_THRESHOLD` (5000ms) [1] and limits the total number of stored faults to `KGSL_MAX_FAULT_ENTRIES` (40) [2]. When the limit is reached, the oldest fault is removed to make room for new ones. These two conditions are very important for our vulnerability as we'll see. Let's look at the fault info retrieval part.
 
@@ -645,7 +645,7 @@ int kgsl_add_fault(struct kgsl_context *context, u32 type, void *priv)
 }
 ```
 
-As we had seen [earlier](http://streypaws.github.io/posts/Fast-and-Faulty-A-Use-After-Free-in-KGSL-Fault-Handling/#kgsl-fault-mechanism), there's a logic in this function to remove faults older than `KGSL_MAX_FAULT_TIME_THRESHOLD` (which is 5000ms) and limits the total number of stored faults to `KGSL_MAX_FAULT_ENTRIES` (which is 40). If we can try triggering any one of these conditions, then it's possible to delete a `kgsl_fault_node` after Thread A gets a reference to it, leading to Use-After-Free. 
+As we had seen [earlier](https://streypaws.github.io/posts/Fast-and-Faulty-A-Use-After-Free-in-KGSL-Fault-Handling/#kgsl-fault-mechanism), there's a logic in this function to remove faults older than `KGSL_MAX_FAULT_TIME_THRESHOLD` (which is 5000ms) and limits the total number of stored faults to `KGSL_MAX_FAULT_ENTRIES` (which is 40). If we can try triggering any one of these conditions, then it's possible to delete a `kgsl_fault_node` after Thread A gets a reference to it, leading to Use-After-Free. 
 
 I first tried the second condition where we need to create 40 pagefaults to reach the threshold, I wrote this code for that -
 
