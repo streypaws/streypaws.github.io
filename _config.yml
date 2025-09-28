@@ -19,7 +19,7 @@ title: StreyPaws # the main title
 tagline: Android & Browser VR Adventures # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
-  My personal blog based on my VR Journey
+  My blog based on my Android VR Journey
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -42,7 +42,10 @@ social:
     - https://github.com/Shreyas-Penkar # change to your GitHub homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
+    - https://www.linkedin.com/in/shreyas-penkar-2934891a7
+    - https://infosec.exchange/@streypaws
+    - https://stackoverflow.com/users/13018785/streypaws
+  
 
 # Site Verification Settings
 webmaster_verifications:
@@ -59,7 +62,7 @@ webmaster_verifications:
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id: G-KNBDK078HL
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
@@ -226,3 +229,6 @@ jekyll-archives:
     category: /categories/:name/
 
 mermaid: true
+
+plugins:
+  - jekyll-seo-tag
